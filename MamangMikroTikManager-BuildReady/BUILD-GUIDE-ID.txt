@@ -1,0 +1,28 @@
+MAMANG MIKROTIK MANAGER — PAKET BUILD
+
+Paket ini berisi starter Flutter dan workflow GitHub Actions untuk:
+1. Android APK release
+2. Windows desktop release
+
+CARA MEMASANG DI REPOSITORY GITHUB
+1. Ekstrak seluruh isi ZIP ini.
+2. Upload semua file dan folder ke root repository:
+   https://github.com/SastraNusantara/winboxMK
+3. Pastikan folder .github/workflows/build.yml ikut ter-upload.
+4. Commit perubahan ke branch main.
+5. Buka tab Actions pada repository.
+6. Pilih workflow "Build Mamang MikroTik Manager".
+7. Klik Run workflow dan tunggu kedua job selesai.
+8. Buka hasil run yang berstatus hijau, lalu bagian Artifacts:
+   - Mamang-MikroTik-Manager-Android-APK
+   - Mamang-MikroTik-Manager-Windows
+
+CATATAN PENTING
+- APK/EXE belum dibuat oleh paket ZIP ini; GitHub Actions yang akan mengompilasinya.
+- Windows artifact berupa folder aplikasi Release, bukan satu file EXE mandiri.
+  Unduh ZIP artifact dan jalankan file .exe di dalam folder hasil ekstrak.
+- Starter saat ini masih prototipe UI dan koneksi RouterOS. Menu lanjutan
+  belum seluruhnya diimplementasikan dan diuji. Jangan gunakan untuk perubahan
+  konfigurasi router produksi sebelum fitur dan keamanan diuji.
+- Gunakan akun RouterOS khusus dengan hak akses minimum dan koneksi LAN/VPN
+  tepercaya. Jangan membuka API router ke internet publik.
