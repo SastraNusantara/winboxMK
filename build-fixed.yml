@@ -1,0 +1,99 @@
+name: Build Mamang MikroTik Manager
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: MamangMikroTikManager-BuildReady
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Android platform
+        run: flutter create --project-name mamang_mikrotik_manager --platforms=android .
+
+      - name: Remove default Flutter sample test
+        run: rm -f test/widget_test.dart
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project
+        run: flutter analyze
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mamang-MikroTik-Manager-Android-APK
+          path: MamangMikroTikManager-BuildReady/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    name: Build Windows
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: MamangMikroTikManager-BuildReady
+        shell: pwsh
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Generate Windows platform
+        run: flutter create --project-name mamang_mikrotik_manager --platforms=windows .
+
+      - name: Remove default Flutter sample test
+        run: |
+          if (Test-Path "test/widget_test.dart") {
+            Remove-Item "test/widget_test.dart" -Force
+          }
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project
+        run: flutter analyze
+
+      - name: Build Windows
+        run: flutter build windows --release
+
+      - name: Upload Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mamang-MikroTik-Manager-Windows
+          path: MamangMikroTikManager-BuildReady/build/windows/x64/runner/Release/
+          if-no-files-found: error
+          retention-days: 14
