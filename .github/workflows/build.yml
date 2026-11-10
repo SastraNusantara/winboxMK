@@ -66,9 +66,12 @@ jobs:
 
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
-
-      - name: Generate Windows platform
-        run: flutter create --project-name mamang_mikrotik_manager --platforms=windows .
+      
+      - name: Remove default Flutter sample test
+        run: |
+          if (Test-Path "test/widget_test.dart") {
+            Remove-Item "test/widget_test.dart"
+          }
 
       - name: Install dependencies
         run: flutter pub get
