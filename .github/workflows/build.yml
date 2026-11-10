@@ -1,12 +1,11 @@
+
 name: Build Mamang MikroTik Manager
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
-    paths:
-      - '**'
-      - '.github/workflows/build.yml'
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -15,18 +14,22 @@ jobs:
   android:
     name: Build Android APK
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: MamangMikroTikManager-BuildReady
+
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Generate Android platform files
-        run: flutter create --platforms=android .
+      - name: Generate Android platform
+        run: flutter create --project-name mamang_mikrotik_manager --platforms=android .
 
       - name: Install dependencies
         run: flutter pub get
@@ -34,25 +37,28 @@ jobs:
       - name: Analyze project
         run: flutter analyze
 
-      - name: Build release APK
+      - name: Build APK
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Mamang-MikroTik-Manager-Android-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: MamangMikroTikManager-BuildReady/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
-          retention-days: 14
 
   windows:
-    name: Build Windows EXE
+    name: Build Windows
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: MamangMikroTikManager-BuildReady
+
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -61,8 +67,8 @@ jobs:
       - name: Enable Windows desktop
         run: flutter config --enable-windows-desktop
 
-      - name: Generate Windows platform files
-        run: flutter create --platforms=windows .
+      - name: Generate Windows platform
+        run: flutter create --project-name mamang_mikrotik_manager --platforms=windows .
 
       - name: Install dependencies
         run: flutter pub get
@@ -70,13 +76,12 @@ jobs:
       - name: Analyze project
         run: flutter analyze
 
-      - name: Build Windows release
+      - name: Build Windows
         run: flutter build windows --release
 
-      - name: Upload Windows application
+      - name: Upload Windows
         uses: actions/upload-artifact@v4
         with:
           name: Mamang-MikroTik-Manager-Windows
-          path: build/windows/x64/runner/Release/
+          path: MamangMikroTikManager-BuildReady/build/windows/x64/runner/Release/
           if-no-files-found: error
-          retention-days: 14
